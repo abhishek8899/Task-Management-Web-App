@@ -33,13 +33,14 @@ def send():
         nnn = request.form['username']
         hashpass = request.form['pass']
         cpass = request.form['conpass']
+        nnnn = request.form['naam']
         cur.execute('SELECT * FROM accounts')
         rows = cur.fetchall()
         exis_user = None
         if hashpass != cpass:
             return 'Confirm correct password'
         for row in rows:
-            if nnn == row[1]:
+            if nnn == row[2]:
                 exis_user = 'a'
                 break
         if exis_user is None:
@@ -47,7 +48,7 @@ def send():
             #   request.form['pass'].encode('utf-8'), bcrypt.gensalt())
             print(hashpass, nnn)
             cur.execute(
-                "INSERT INTO accounts (NAME,PASSWARD) VALUES (?,?);", (nnn, hashpass))
+                "INSERT INTO accounts (NAME,EMAIL,PASSWARD) VALUES (?,?,?);", (nnnn, nnn, hashpass))
             conn.commit()
             cur.execute('SELECT * FROM accounts')
             rows = cur.fetchall()
@@ -71,7 +72,7 @@ def dashboard():
         emala = request.form['ema']
         passa = request.form['pa']
         rows = None
-        cur.execute('SELECT PASSWARD FROM accounts where NAME = ?', (emala,))
+        cur.execute('SELECT PASSWARD FROM accounts where EMAIL = ?', (emala,))
         rows = cur.fetchall()
         if rows is None:
             return 'the username or password is wrong'
@@ -79,7 +80,9 @@ def dashboard():
         if rows[0][0] == passa:
             global login
             login = True
-            return render_template('dashboard.html',)
+            cur.execute('SELECT * FROM accounts where EMAIL = ?', (emala,))
+            row = cur.fetchall()
+            return render_template('dashboard.html', data=row)
             pass
         conn.close()
 
