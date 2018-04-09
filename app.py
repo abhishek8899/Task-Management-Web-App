@@ -20,20 +20,24 @@ def main2():
     return render_template('login.html')
 
 
+@app.route("/dashboard.html")
+def main3():
+    return render_template('dashboard.html')
+
+
 @app.route("/send", methods=['POST', 'GET'])
-def register():
+def send():
     if request.method == 'POST':
         conn = sqlite3.connect('db/test.db')
         cur = conn.cursor()
         nnn = request.form['username']
         hashpass = request.form['pass']
         cpass = request.form['conpass']
-        #exis_user = accounts.find_one({'NAME': request.form['username']})
         cur.execute('SELECT * FROM accounts')
         rows = cur.fetchall()
         exis_user = None
         if hashpass != cpass:
-            return 'Confirm correct password'            
+            return 'Confirm correct password'
         for row in rows:
             if nnn == row[1]:
                 exis_user = 'a'
@@ -41,15 +45,14 @@ def register():
         if exis_user is None:
             #   hashpass = bcrypt.hashpw(
             #   request.form['pass'].encode('utf-8'), bcrypt.gensalt())
-            #   users.insert(
-            #   {'name': request.form['username'], 'password': hashpass})
-            print (hashpass, nnn)
-            cur.execute("INSERT INTO accounts (NAME,PASSWARD) VALUES (?,?);", (nnn, hashpass))
+            print(hashpass, nnn)
+            cur.execute(
+                "INSERT INTO accounts (NAME,PASSWARD) VALUES (?,?);", (nnn, hashpass))
             conn.commit()
             cur.execute('SELECT * FROM accounts')
             rows = cur.fetchall()
             for row in rows:
-                print (row)
+                print(row)
             pass
             conn.close()
 
@@ -60,17 +63,34 @@ def register():
     return render_template('signup.html')
 
 
+@app.route('/dashboard.html', methods=['POST', 'GET'])
+def dashboard():
+    if request.method == 'POST':
+        conn = sqlite3.connect('db/test.db')
+        cur = conn.cursor()
+        emala = request.form['ema']
+        passa = request.form['pa']
+        rows = None
+        cur.execute('SELECT PASSWARD FROM accounts where NAME = ?', (emala,))
+        rows = cur.fetchall()
+        if rows is None:
+            return 'the username or password is wrong'
+            pass
+        if rows[0][0] == passa:
+            global login
+            login = True
+            return render_template('dashboard.html',)
+            pass
+        conn.close()
+
+        return 'the username or password is wrong'
+    return render_template('signup.html')
+
+
 if __name__ == "__main__":
     app.debug = True
     app.run()
 
-
-# @app.route('/show_account/')
-#   def show_account():
-#       logged_in = False
-#       if not logged_in:
-#           abort(401)
-#       return "balance is ..."
 
 #  @app.route('/test1/')
 # def test1():
