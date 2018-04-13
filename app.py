@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
+import bcrypt
+import test
 
-
+login = False
 app = Flask(__name__)
 
 
@@ -15,14 +17,20 @@ def main1():
     return render_template('signup.html')
 
 
-@app.route("/login.html")
+@app.route("/login.html" , methods=['POST', 'GET'])
 def main2():
+    global login
+    login = False
     return render_template('login.html')
 
 
 @app.route("/dashboard.html")
 def main3():
-    return render_template('dashboard.html')
+    global login
+    if login is True:
+        return render_template('dashboard.html')
+    else:
+        return "YOU ARE NOT ALLOWED TO ENTER"
 
 
 @app.route("/send", methods=['POST', 'GET'])
@@ -31,24 +39,24 @@ def send():
         conn = sqlite3.connect('db/test.db')
         cur = conn.cursor()
         nnn = request.form['username']
-        hashpass = request.form['pass']
+        hashpassa = request.form['pass']
         cpass = request.form['conpass']
         nnnn = request.form['naam']
         cur.execute('SELECT * FROM accounts')
         rows = cur.fetchall()
         exis_user = None
-        if hashpass != cpass:
+        if hashpassa != cpass:
             return 'Confirm correct password'
         for row in rows:
             if nnn == row[2]:
                 exis_user = 'a'
                 break
         if exis_user is None:
-            #   hashpass = bcrypt.hashpw(
-            #   request.form['pass'].encode('utf-8'), bcrypt.gensalt())
-            print(hashpass, nnn)
+            l = bcrypt.gensalt()
+            hashpass = bcrypt.hashpw(hashpassa.encode('utf-8'),l)
+            print( hashpass, nnn)
             cur.execute(
-                "INSERT INTO accounts (NAME,EMAIL,PASSWARD) VALUES (?,?,?);", (nnnn, nnn, hashpass))
+                "INSERT INTO accounts (NAME,EMAIL,PASSWARD,SALT) VALUES (?,?,?,?);", (nnnn, nnn, hashpass,l))
             conn.commit()
             cur.execute('SELECT * FROM accounts')
             rows = cur.fetchall()
@@ -71,6 +79,15 @@ def dashboard():
         cur = conn.cursor()
         emala = request.form['ema']
         passa = request.form['pa']
+        cur.execute('SELECT SALT FROM accounts where EMAIL = ?', (emala,))
+        rows = cur.fetchall()
+        if rows is None:
+            return 'the username or password is wrong'
+            pass
+        hashpass = rows[0][0]
+        passa = bcrypt.hashpw(passa.encode('utf-8'), hashpass)
+        print(passa)
+
         rows = None
         cur.execute('SELECT PASSWARD FROM accounts where EMAIL = ?', (emala,))
         rows = cur.fetchall()
@@ -93,22 +110,3 @@ def dashboard():
 if __name__ == "__main__":
     app.debug = True
     app.run()
-
-
-#  @app.route('/test1/')
-# def test1():
-#     fname = 'welcome'
-#     return redirect(url_for(fname))
-
-# @app.route('/test2/')
-# def test2():
-#     fname, name = 'welcome', 'foo'
-#     return redirect (url_for(fname, name = name))
-
-# @app.route('/welcome/')
-# @app.route('/welcome/<name>')
-# def welcome(name = None):
-#     if name is None:
-#         return "<h2 style=color:green>Hello %s !</h2>" % "Unknown User"
-#     else:
-#         return "<h2 style=color:green>Hello %s !</h2>" % name

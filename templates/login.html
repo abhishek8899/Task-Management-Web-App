@@ -1,38 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<title>Login form</title>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="../static/login.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>	
-</head >
+	<title>Daily UI - Day 1 Sign In</title>
+
+	<!-- Google Fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" href="../static/animate.css">
+	<!-- Custom Stylesheet -->
+	<link rel="stylesheet" href="../static/style.css">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
 <body>
-	<div class="container-fluid bg">
-		<div class="row">
-			<div class="col-md-4 col-sm-4 col-xs-12"></div>
-			<div class="col-md-4 col-sm-4 col-xs-12 ">
-				<form class="form-conatiner" method="POST" action="/dashboard.html">
-					<font size=40%><center>Log in</center></font>
-				  <div class="form-group">
-				    Email address
-				    <input type="email" class="form-control" name="ema" id="exampleInputEmail1" placeholder="Email" required>
-				  </div>
-				  <div class="form-group">
-				    Password
-				    <input type="password" class="form-control" name="pa" id="exampleInputPassword1" placeholder="Password" required>
-				  </div>
-				  <div class="checkbox">
-				      <input type="checkbox"> Remember me
-				  </div>
-				  <button type="submit" class="btn btn-success  btn-block">Submit</button>
-				</form>	
+	<div class="container">
+		<div class="top">
+			<h1 id="title" class="hidden"><span id="logo">Daily <span>UI</span></span></h1>
+		</div>
+		<div class="login-box animated fadeInUp">
+			<div class="box-header">
+				<h2>Log In</h2>
 			</div>
-			<div class="col-md-4 col-sm-4 col-xs-12"></div>
+			<form class="form-conatiner" method="POST" action="/dashboard.html">
+			<label for="username">Email</label>
+			<br/>
+			<input type="email" name="ema" placeholder="Email" require id="username" >
+			<br/>
+			<label for="password">Password</label>
+			<br/>
+			<input type="password" id="password" name="pa"  placeholder="Password" required>
+			<br/>
+			<button type="submit">Sign In</button>
+		</form>
+			<br/>
 		</div>
 	</div>
-
 </body>
+
+<script>
+	$(document).ready(function () {
+    	$('#logo').addClass('animated fadeInDown');
+    	$("input:text:visible:first").focus();
+	});
+	$('#username').focus(function() {
+		$('label[for="username"]').addClass('selected');
+	});
+	$('#username').blur(function() {
+		$('label[for="username"]').removeClass('selected');
+	});
+	$('#password').focus(function() {
+		$('label[for="password"]').addClass('selected');
+	});
+	$('#password').blur(function() {
+		$('label[for="password"]').removeClass('selected');
+	});
+</script>
+
 </html>
