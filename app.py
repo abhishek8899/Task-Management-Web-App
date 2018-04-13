@@ -2,9 +2,10 @@ from flask import Flask, render_template, request, redirect
 import sqlite3
 import bcrypt
 import test
-emailg = "dsasdds"
 
+emailg = "a"
 login = False
+loginuser = "a"
 app = Flask(__name__)
 
 
@@ -21,8 +22,22 @@ def main1():
 @app.route("/login.html", methods=['POST', 'GET'])
 def main2():
     global login
+    if login is True:
+        conn = sqlite3.connect('db/test.db')
+        cur = conn.cursor()
+        global loginuser
+        cur.execute('SELECT * FROM accounts where EMAIL = ?', (loginuser,))
+        row = cur.fetchall()
+        return render_template('dashboard.html', data=row)
+    else:
+        return render_template('login.html')
+
+
+@app.route("/logout", methods=['POST', 'GET'])
+def main21():
+    global login
     login = False
-    return render_template('login.html')
+    return redirect('login.html')
 
 
 @app.route("/send", methods=['POST', 'GET'])
@@ -44,11 +59,11 @@ def send():
                 exis_user = 'a'
                 break
         if exis_user is None:
-            la = bcrypt.gensalt()
-            hashpass = bcrypt.hashpw(hashpassa.encode('utf-8'), la)
+            l = bcrypt.gensalt()
+            hashpass = bcrypt.hashpw(hashpassa.encode('utf-8'), l)
             print(hashpass, nnn)
             cur.execute(
-                "INSERT INTO accounts (NAME,EMAIL,PASSWARD,SALT) VALUES (?,?,?,?);", (nnnn, nnn, hashpass, la))
+                "INSERT INTO accounts (NAME,EMAIL,PASSWARD,SALT) VALUES (?,?,?,?);", (nnnn, nnn, hashpass, l))
             conn.commit()
             cur.execute('SELECT * FROM accounts')
             rows = cur.fetchall()
@@ -64,44 +79,6 @@ def send():
     return render_template('signup.html')
 
 
-@app.route('/dashboard.html', methods=['POST', 'GET'])
-def dashboard():
-    if request.method == 'POST':
-        conn = sqlite3.connect('db/test.db')
-        cur = conn.cursor()
-        emala = request.form['ema']
-        passa = request.form['pa']
-        cur.execute('SELECT SALT FROM accounts where EMAIL = ?', (emala,))
-        rows = cur.fetchall()
-        if len(rows) is 0:
-            return 'the username or password is wrong'
-            pass
-        rowsa = None
-        cur.execute('SELECT PASSWARD FROM accounts where EMAIL = ?', (emala,))
-        rowsa = cur.fetchall()
-        print(rowsa)
-        print(rows)
-        if len(rowsa) is 0:
-            return 'the username or password is wrong'
-            pass
-        hashpass = rows[0][0]
-        passa = bcrypt.hashpw(passa.encode('utf-8'), hashpass)
-        print(passa)
-        if rowsa[0][0] == passa:
-            global login
-            global emailg
-            emailg = emala
-            login = True
-            cur.execute('SELECT * FROM users where EMAIL = ?', (emala,))
-            row = cur.fetchall()
-            return render_template('dashboard.html', data=row)
-            pass
-        conn.close()
-
-        return 'the username or password is wrong'
-    return render_template('signup.html')
-
-
 @app.route('/add', methods=['POST', 'GET'])
 def add():
     if request.method == 'POST':
@@ -111,26 +88,58 @@ def add():
         sd = request.form['sdate']
         ed = request.form['edate']
         kk = "TO DO"
+        rowsq = None
+        cur.execute('SELECT EMAIL FROM users where TASK = ?', (taska,))
+        rowsq = cur.fetchall()
+        flag = False
         global emailg
-        cur.execute(
-            "INSERT INTO users (EMAIL,TASK,STARTING,ENDING,STATUS) VALUES (?,?,?,?,?);", (emailg, taska, sd, ed, kk))
-        conn.commit()
+        for row in rowsq:
+            print (row[0], emailg)
+            if row[0] == emailg:
+                flag = True
+        if flag is False:
+            cur.execute("INSERT INTO users (EMAIL,TASK,STARTING,ENDING,STATUS) VALUES (?,?,?,?,?);",
+                        (emailg, taska, sd, ed, kk))
+            conn.commit()
         cur.execute('SELECT * FROM users where EMAIL = ?', (emailg,))
         row = cur.fetchall()
         conn.close()
         return render_template('dashboard.html', data=row)
 
 
-@app.route('/search', methods=['POST', 'GET'])
-def search():
+@app.route('/dashboard.html', methods=['POST', 'GET'])
+def dashboard():
+    #print (request.method)
     if request.method == 'POST':
         conn = sqlite3.connect('db/test.db')
         cur = conn.cursor()
-        se = request.form['searching']
-        cur.execute('SELECT * FROM users where TASK = ?', (se,))
-        row = cur.fetchall()
+        emala = request.form['ema']
+        global loginuser
+        loginuser = emala
+        passa = request.form['pa']
+        cur.execute('SELECT SALT FROM accounts where EMAIL = ?', (emala,))
+        rows = cur.fetchall()
+        if len(rows) is 0:
+            return 'username does not exist'
+            pass
+        rowsa = None
+        cur.execute('SELECT PASSWARD FROM accounts where EMAIL = ?', (emala,))
+        rowsa = cur.fetchall()
+        if len(rowsa) is 0:
+            return 'the username or password is wrong'
+            pass
+        hashpass = rows[0][0]
+        passa = bcrypt.hashpw(passa.encode('utf-8'), hashpass)
+        if rowsa[0][0] == passa:
+            global login
+            login = True
+            cur.execute('SELECT * FROM users where EMAIL = ?', (emala,))
+            row = cur.fetchall()
+            return render_template('dashboard.html', data=row)
+            pass
         conn.close()
-        return render_template('dashboard.html', data=row)
+        return 'the username or password is wrong'
+    return redirect('login.html')
 
 
 if __name__ == "__main__":
