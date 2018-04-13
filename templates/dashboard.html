@@ -4,17 +4,22 @@
 	<title>Dashboard</title>
 </head>
 <body>	
-	<h1> id {{ data[0][0] }}</h1>
-	<h1> username  {{data[0][1] }}</h1>
-	<h1> email  {{data[0][2]}}</h1>
-	<h1> password {{data[0][3]}}</h1>
-	<h2>Enter the task you want to create</h2>
-	<input type="text" name="tasks" placeholder="task you want to add"> 
+	<form method="POST" action="/add">
+	<input type="text" name="task" placeholder="task you want to add" required> 
 	<h2>Starting date</h2>
-	<input type="date" name="sdate">
+	<input type="date" name="sdate" required>
 	<h2>Ending Date</h2>
-	<input type="date" name="edate"><br>
-	<button>Add Task</button>
+	<input type="date" name="edate" required><br>
+	<button type="submit">Add Task</button>
+</form>
+<br><br>
+<h1>Enter the task you want to search</h1>
+<form method="POST" action="/search">
+	<input type="text" name="searching" placeholder="search" required>
+	<button type="submit">Search</button>
+</form>
+<br>
+<br>
 	<table border="1">
 		<tr>
 			<th>
@@ -30,12 +35,14 @@
 				status
 			</th>
 		</tr>
+		{% for x in data %}
 		<tr>
-			<td>ds</td>
-			<td>dfsfs</td>
-			<td>fdsfdsf</td>
-			<td>fdsfdsdfsa</td>
+			<td>{{x[2]}}</td>
+			<td>{{x[3]}}</td>
+			<td>{{x[4]}}</td>
+			<td>{{x[5]}}</td>
 		</tr>
+		{% endfor %}
 	</table>
 	<form method="POST" action="/login.html">
 		<button type="submit">log out</button>
