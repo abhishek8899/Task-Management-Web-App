@@ -81,20 +81,21 @@ def dashboard():
         passa = request.form['pa']
         cur.execute('SELECT SALT FROM accounts where EMAIL = ?', (emala,))
         rows = cur.fetchall()
-        if rows is None:
+        if len(rows) is 0:
+            return 'the username or password is wrong'
+            pass
+        rowsa = None
+        cur.execute('SELECT PASSWARD FROM accounts where EMAIL = ?', (emala,))
+        rowsa = cur.fetchall()
+        print(rowsa)
+        print(rows)
+        if len(rowsa) is 0:
             return 'the username or password is wrong'
             pass
         hashpass = rows[0][0]
         passa = bcrypt.hashpw(passa.encode('utf-8'), hashpass)
         print(passa)
-
-        rows = None
-        cur.execute('SELECT PASSWARD FROM accounts where EMAIL = ?', (emala,))
-        rows = cur.fetchall()
-        if rows is None:
-            return 'the username or password is wrong'
-            pass
-        if rows[0][0] == passa:
+        if rowsa[0][0] == passa:
             global login
             login = True
             cur.execute('SELECT * FROM accounts where EMAIL = ?', (emala,))
