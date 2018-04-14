@@ -9,7 +9,11 @@
 		<h2>Starting date</h2>
 		<input type="date" name="sdate" required>
 		<h2>Ending Date</h2>
-		<input type="date" name="edate" required><br>
+		<input type="date" name="edate" required>
+		<br><br>
+		<input type="radio" name="gender" value="done" checked>Done <br>
+  		<input type="radio" name="gender" value="doing">In progress <br>
+  		<input type="radio" name="gender" value="todo">Done <br><br>
 		<button type="submit">Add Task</button>
 	</form>
 	<br><br><br><br>
@@ -44,7 +48,7 @@
 		</tr>
 		{% endfor %}
 	</table>
-	<form method="POST" action="/login.html">
+	<form method="POST" action="/logout">
 		<button type="submit">log out</button>
 	</form>
 

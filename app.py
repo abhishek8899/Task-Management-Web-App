@@ -22,11 +22,12 @@ def main1():
 @app.route("/login.html", methods=['POST', 'GET'])
 def main2():
     global login
+    print (login)
     if login is True:
         conn = sqlite3.connect('db/test.db')
         cur = conn.cursor()
-        global loginuser
-        cur.execute('SELECT * FROM accounts where EMAIL = ?', (loginuser,))
+        global emailg
+        cur.execute('SELECT * FROM accounts where EMAIL = ?', (emailg,))
         row = cur.fetchall()
         return render_template('dashboard.html', data=row)
     else:
@@ -114,29 +115,33 @@ def dashboard():
         conn = sqlite3.connect('db/test.db')
         cur = conn.cursor()
         emala = request.form['ema']
-        global loginuser
-        loginuser = emala
+        global emailg
+        emailg = emala
         passa = request.form['pa']
         cur.execute('SELECT SALT FROM accounts where EMAIL = ?', (emala,))
+        conn.commit()
         rows = cur.fetchall()
         if len(rows) is 0:
+            conn.close()
             return 'username does not exist'
-            pass
         rowsa = None
         cur.execute('SELECT PASSWARD FROM accounts where EMAIL = ?', (emala,))
+        conn.commit()
         rowsa = cur.fetchall()
         if len(rowsa) is 0:
+            conn.close()
             return 'the username or password is wrong'
-            pass
         hashpass = rows[0][0]
         passa = bcrypt.hashpw(passa.encode('utf-8'), hashpass)
         if rowsa[0][0] == passa:
             global login
+            #emailg = emala
+            print (emailg, emala)
             login = True
-            cur.execute('SELECT * FROM users where EMAIL = ?', (emala,))
+            cur.execute('SELECT * FROM users where EMAIL = ?', (emailg,))
             row = cur.fetchall()
+            conn.close()
             return render_template('dashboard.html', data=row)
-            pass
         conn.close()
         return 'the username or password is wrong'
     return redirect('login.html')
