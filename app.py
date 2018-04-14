@@ -88,14 +88,14 @@ def add():
         taska = request.form['task']
         sd = request.form['sdate']
         ed = request.form['edate']
-        kk = "TO DO"
+        kk = request.form['typee']
         rowsq = None
         cur.execute('SELECT EMAIL FROM users where TASK = ?', (taska,))
         rowsq = cur.fetchall()
         flag = False
         global emailg
         for row in rowsq:
-            print (row[0], emailg)
+            #print (row[0], emailg)
             if row[0] == emailg:
                 flag = True
         if flag is False:
