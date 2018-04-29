@@ -5,26 +5,37 @@
 </head>
 <body>	
 	<form method="POST" action="/add">
+		<h1>Task</h1>
 		<input type="text" name="task" placeholder="task you want to add" required> 
 		<h2>Starting date</h2>
 		<input type="date" name="sdate" required>
 		<h2>Ending Date</h2>
 		<input type="date" name="edate" required>
 		<br><br>
+		<h2>Status</h2>
 		<input type="radio" name="typee" value="Done" checked>Done <br>
   		<input type="radio" name="typee" value="In Progress">In progress <br>
   		<input type="radio" name="typee" value="To Do">To Do <br><br>
+  		<h2>Priority</h2>
+		<input type="radio" name="colora" value="1">1<br>
+		<input type="radio" name="colora" value="2">2<br>
+		<input type="radio" name="colora" value="3">3<br>
 		<button type="submit">Add Task</button>
 	</form>
 	<br><br><br><br>
 	<h1>Enter the task you want to search</h1>
 	<form method="POST" action="/search">
 		<input type="text" name="searching" placeholder="search" required>
+		<select name="sea" required>
+			<option value=0>Select option:</option>
+			<option value=1 >Tags</option>
+			<option value=2 >Title</option>
+		</select>
 		<button type="submit">Search</button>
 	</form>
 	<br>
 	<br>
-	<table border="1">
+	<table border="4">
 		<tr>
 			<th>
 				tasks
@@ -40,7 +51,7 @@
 			</th>
 		</tr>
 		{% for x in data %}
-		<tr>
+		<tr bgcolor="{{x[6]}}">
 			<td>{{x[2]}}</td>
 			<td>{{x[3]}}</td>
 			<td>{{x[4]}}</td>
