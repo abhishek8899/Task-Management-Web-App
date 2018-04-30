@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+
+	<title>My Profile</title>
+
+	<!-- Font Awesome Icons -->
+	<link rel="stylesheet" href="../static/plugins/font-awesome/css/font-awesome.min.css">
+	<!-- Theme style -->
+	<link rel="stylesheet" href="../static/dist/css/adminlte.min.css">
+	<!-- Google Font: Source Sans Pro -->
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<body class="hold-transition sidebar-mini">
+	<div class="wrapper">
+
+		<!-- Navbar -->
+		<nav class="main-header navbar navbar-expand bg-white navbar-light border-bottom">
+			<!-- Left navbar links -->
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
+				</li>
+				<li class="nav-item d-none d-sm-inline-block">
+					<a href="dashboard.html" class="nav-link">Dashboard</a>
+				</li>
+				<li class="nav-item d-none d-sm-inline-block">
+					<a href="contact.html" class="nav-link">Contact</a>
+				</li>
+			</ul>
+
+			<!-- Right navbar links -->
+			<ul class="navbar-nav ml-auto">
+				<!-- Notifications Dropdown Menu -->
+				<li class="nav-item dropdown">
+					<a class="nav-link" data-toggle="dropdown" href="#">
+						<i class="fa fa-bell-o"></i>
+						<span class="badge badge-warning navbar-badge">+</span>
+					</a>
+					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+						<span class="dropdown-item dropdown-header">15 Notifications</span>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item">
+							<i class="fa fa-envelope mr-2"></i> 4 new messages
+							<span class="float-right text-muted text-sm">3 mins</span>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item">
+							<i class="fa fa-users mr-2"></i> 8 friend requests
+							<span class="float-right text-muted text-sm">12 hours</span>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item">
+							<i class="fa fa-file mr-2"></i> 3 new reports
+							<span class="float-right text-muted text-sm">2 days</span>
+						</a>
+						<div class="dropdown-divider"></div>
+						<a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+					</div>
+				</li>
+				<li class="nav-item">
+          <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="profile.html"><i
+            class="fa fa-th-large">My Profile</i></a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.navbar -->
+
+      <!-- Main Sidebar Container -->
+      <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+    <!-- <a href="index3.html" class="brand-link">
+      <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">AdminLTE 3</span>
+    </a> -->
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+     <!-- Sidebar user panel (optional) -->
+     <br><br>
+     <center><a href="profile.html" class="d-block"><img src="../static/{{iimg}}" class="img-circle elevation-2" width="200vw" height="200vw" alt="User Image"></a>
+      <br><br><br>
+      {% for x in data %}
+      <a href="#" class="d-block"><b><h4>{{x[1]}}</h4></b></a>
+      {% endfor %}
+    </center>
+    <br><br>
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+          with font-awesome or any other icon font library -->
+          <li class="nav-item has-treeview menu-open">
+          	<a href="dashboard.html" class="nav-link active">
+          		<i class="nav-icon fa fa-dashboard"></i>
+          		<p>
+          			Dashboard
+          			<i class="right fa fa-angle-left"></i>
+          		</p>
+          	</a>
+          	<li class="nav-header">EXAMPLES</li>
+          	<li class="nav-item">
+          		<a href="calendar.html" class="nav-link">
+          			<i class="nav-icon fa fa-calendar"></i>
+          			<p>
+          				Calendar
+          				<span class="badge badge-info right">2</span>
+          			</p>
+          		</a>
+          	</li>
+          	<li class="nav-item has-treeview">
+          		<a href="contact.html" class="nav-link">
+          			<i class="nav-icon fa fa-envelope-o"></i>
+          			<p>
+          				Contact
+          				<i class="fa fa-angle-left right"></i>
+          			</p>
+          		</a>
+          	</li>
+          	<li class="nav-item has-treeview">
+          		<a href="profile.html" class="nav-link">
+          			<i class="nav-icon fa fa-book"></i>
+          			<p>
+          				My Profile
+          				<i class="fa fa-angle-left right"></i>
+          			</p>
+          		</a>
+          	</li>
+          	<li class="nav-item has-treeview">
+             <form method="POST" action="/logout">
+             <center><font color="#c2c7d0">Log out</font>
+              <button type="submit">.</button></center>
+            </form>
+          </li>
+          <li class="nav-header">LABELS</li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-circle-o text-info"></i>
+              <p>Informational</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <div class="content-wrapper">
+   <!-- /.content-header -->
+   <br><br>
+   <center><img src="../static/{{iimg}}" class="elevation-2" alt="User Image" height="20%" width="17%">
+    <br><br>
+
+    <form action="/upload" method="post" enctype="multipart/form-data" >
+      <span class="btn btn-default btn-file">
+        Browse <input type="file" name="image">
+      </span>
+
+      <input type="submit" value="Upload your image" class="btn btn-primary">
+    </form>
+    <br><br><br>
+    <center>
+      <pre>
+       {% for x in data %}
+       <h1><i><b>NAME:-</b></i>   {{x[1]}}<br>
+         <b><i>USERNAME (EMAIL) :-</b></i>   {{x[2]}}</h1></pre>
+         <tr>
+          <td>{{x[0][2]}}</td>
+          <td>{{x[0][3]}}</td>
+          <td>{{x[0][4]}}</td>
+          <td>{{x[0][5]}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      <br><br>
+      <form method="POST" action="/logout">
+       <center></center><button type="submit">log out</button></center>
+     </form>
+   </center>
+   <br><br><br><br><br><br>
+   <br><br><br><br><br><br>
+ </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+</div>
+
+<!-- /.content-wrapper -->
+<footer class="main-footer">
+	<strong>Copyright &copy; 2018 <a href="http://adminlte.io">Abhishek Mathur &amp; Mayank Agarwal</a>.</strong>
+	All rights reserved.
+</footer>
+
+
+</div>
+<!-- ./wrapper -->
+
+<script src="../static/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="../static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../static/dist/js/adminlte.js"></script>
+
+<!-- OPTIONAL SCRIPTS -->
+<script src="../static/dist/js/demo.js"></script>
+
+<!-- PAGE PLUGINS -->
+<!-- SparkLine -->
+<script src="../static/plugins/sparkline/jquery.sparkline.min.js"></script>
+<!-- jVectorMap -->
+<script src="../static/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+<script src="../static/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<!-- SlimScroll 1.3.0 -->
+<script src="../static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- ChartJS 1.0.2 -->
+<script src="../static/plugins/chartjs-old/Chart.min.js"></script>
+
+<!-- PAGE SCRIPTS -->
+<script src="../static/dist/js/pages/dashboard2.js"></script>
+</body>
+</html>

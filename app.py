@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 import sqlite3
 import bcrypt
 import test
+import os
 import time
 import datetime
 
@@ -9,6 +10,10 @@ emailg = "a"
 login = False
 loginuser = "a"
 app = Flask(__name__)
+
+
+UPLOAD_FOLDER = os.path.basename('uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route("/")
@@ -21,19 +26,153 @@ def main1():
     return render_template('signup.html')
 
 
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    file = request.files['image']
+    print ("file ",file)
+    filename = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
+    file.save(filename)
+    print (filename, file)
+    global emailg
+    os.rename(filename, 'static/' + emailg + '.jpg')
+    return redirect('profile.html')
+
+
 @app.route("/login.html", methods=['POST', 'GET'])
 def main2():
     global login
-    print (login)
+    #print (login)
+    if login is True:
+        conn = sqlite3.connect('db/test.db')
+        cur = conn.cursor()
+        global emailg
+        cur.execute('SELECT name FROM accounts where EMAIL = ?', (emailg,))
+        row = cur.fetchall()
+        return render_template('dashboard.html', data=row)
+    else:
+        return render_template('login.html')
+
+
+@app.route("/mytasks.html", methods=['POST', 'GET'])
+def main3():
+    global login
+    #print (login)
+    if login is True:
+        conn = sqlite3.connect('db/test.db')
+        cur = conn.cursor()
+        global emailg
+        cur.execute('SELECT * FROM users where EMAIL = ?', (emailg,))
+        r1 = cur.fetchall()
+        cur.execute('SELECT pid,name FROM accounts where EMAIL = ?', (emailg,))
+        row = cur.fetchall()
+        print ("row                   ", row)
+        print ("r1                   ", r1)
+        result = []
+        name = emailg + '.jpg'
+        path = 'static/'
+        for root, dirs, files in os.walk(path):
+            if name in files:
+                result.append(os.path.join(root, name))
+        if len(result) == 0:
+            return render_template('mytasks.html', data=row, data1=r1, iimg='user.png')
+        else:
+            return render_template('mytasks.html', data=row, data1=r1, iimg=name)
+    else:
+        return redirect('login.html')
+
+
+@app.route("/profile.html", methods=['POST', 'GET'])
+def main4():
+    global login
+    if login is True:
+        print ('ituwguiniunet roefer')
+        conn = sqlite3.connect('db/test.db')
+        cur = conn.cursor()
+        global emailg
+        cur.execute('SELECT * FROM accounts where EMAIL = ?', (emailg,))
+        row = cur.fetchall()
+        result = []
+        name = emailg + '.jpg'
+        path = 'static/'
+        for root, dirs, files in os.walk(path):
+            if name in files:
+                result.append(os.path.join(root, name))
+        if len(result) == 0:
+            return render_template('profile.html', data=row, iimg='user.png')
+        else:
+            return render_template('profile.html', data=row, iimg=name)
+    else:
+        return redirect('login.html')
+
+
+@app.route("/calendar.html", methods=['POST', 'GET'])
+def main6():
+    global login
     if login is True:
         conn = sqlite3.connect('db/test.db')
         cur = conn.cursor()
         global emailg
         cur.execute('SELECT * FROM accounts where EMAIL = ?', (emailg,))
         row = cur.fetchall()
-        return render_template('dashboard.html', data=row)
+        result = []
+        name = emailg + '.jpg'
+        path = 'static/'
+        for root, dirs, files in os.walk(path):
+            if name in files:
+                result.append(os.path.join(root, name))
+        if len(result) == 0:
+            return render_template('calendar.html', data=row, iimg='user.png')
+        else:
+            return render_template('calendar.html', data=row, iimg=name)
     else:
-        return render_template('login.html')
+        return redirect('login.html')
+
+
+@app.route("/contact.html", methods=['POST', 'GET'])
+def main7():
+    global login
+    if login is True:
+        conn = sqlite3.connect('db/test.db')
+        cur = conn.cursor()
+        global emailg
+        cur.execute('SELECT * FROM accounts where EMAIL = ?', (emailg,))
+        row = cur.fetchall()
+        result = []
+        name = emailg + '.jpg'
+        path = 'static/'
+        for root, dirs, files in os.walk(path):
+            if name in files:
+                result.append(os.path.join(root, name))
+        if len(result) == 0:
+            return render_template('contact.html', data=row, iimg='user.png')
+        else:
+            return render_template('contact.html', data=row, iimg=name)
+    else:
+        return redirect('login.html')
+
+
+@app.route("/information.html", methods=['POST', 'GET'])
+def main5():
+    global login
+    if login is True:
+        conn = sqlite3.connect('db/test.db')
+        cur = conn.cursor()
+        global emailg
+        cur.execute('SELECT * FROM accounts where EMAIL = ?', (emailg,))
+        row = cur.fetchall()
+        result = []
+        name = emailg + '.jpg'
+        path = 'static/'
+        for root, dirs, files in os.walk(path):
+            if name in files:
+                result.append(os.path.join(root, name))
+        if len(result) == 0:
+            return render_template('information.html', data=row, iimg='user.png')
+        else:
+            return render_template('information.html', data=row, iimg=name)
+    else:
+        return redirect('login.html')
+
 
 
 @app.route("/logout", methods=['POST', 'GET'])
@@ -74,7 +213,6 @@ def send():
                 print(row)
             pass
             conn.close()
-
             return redirect('login.html')
 
         return 'That username already exists'
@@ -93,11 +231,11 @@ def add():
         kk = request.form['typee']
         col = request.form['colora']
         if col == "1":
-            colo = "red"
+            colo = "#fe5e5e"
         elif col == "2":
-            colo = "green"
+            colo = "#fafeb9"
         else:
-            colo = "white"
+            colo = "#c7fdc5"
         rowsq = None
         cur.execute('SELECT EMAIL FROM users where TASK = ?', (taska,))
         rowsq = cur.fetchall()
@@ -114,8 +252,11 @@ def add():
         cur.execute('SELECT * FROM users where EMAIL = ?', (emailg,))
         row = cur.fetchall()
         conn.close()
-        return render_template('dashboard.html', data=row)
+        return redirect('mytasks.html')
 
+@app.route('/index.html', methods=['POST', 'GET'])
+def indi():
+    return render_template('index.html');
 
 @app.route('/dashboard.html', methods=['POST', 'GET'])
 def dashboard():
@@ -144,16 +285,47 @@ def dashboard():
         passa = bcrypt.hashpw(passa.encode('utf-8'), hashpass)
         if rowsa[0][0] == passa:
             global login
-            #emailg = emala
             print (emailg, emala)
             login = True
-            cur.execute('SELECT * FROM users where EMAIL = ?', (emailg,))
+            cur.execute('SELECT name FROM accounts where EMAIL = ?', (emailg,))
             row = cur.fetchall()
             conn.close()
-            return render_template('dashboard.html', data=row)
+            #print ("in dashboard  row  ", row)
+            result = []
+            name = emailg + '.jpg'
+            print ('deknejnokdnlnklked             ', name)
+            #print (name)
+            path = 'static/'
+            for root, dirs, files in os.walk(path):
+                if name in files:
+                    result.append(os.path.join(root, name))
+            if len(result) == 0:
+                return render_template('dashboard.html', data=row, iimg='user.png')
+            else:
+                return render_template('dashboard.html', data=row, iimg=name)
         conn.close()
         return 'the username or password is wrong'
-    return redirect('login.html')
+    else:
+        global login
+        if login is False:
+            return redirect('login.html')
+        else:
+            global emailg
+            conn = sqlite3.connect('db/test.db')
+            cur = conn.cursor()
+            cur.execute('SELECT name FROM accounts where EMAIL = ?', (emailg,))
+            row = cur.fetchall()
+            conn.close()
+            result = []
+            name = emailg + '.jpg'
+            path = 'static/'
+            for root, dirs, files in os.walk(path):
+                if name in files:
+                    result.append(os.path.join(root, name))
+            if len(result) == 0:
+                return render_template('dashboard.html', data=row, iimg='user.png')
+            else:
+                return render_template('dashboard.html', data=row, iimg=name)
 
 
 @app.route('/search', methods=['POST', 'GET'])
@@ -167,10 +339,22 @@ def search():
         if option is "1":
             cur.execute('SELECT * FROM users where STATUS = ? and EMAIL= ?', (se,emailg,))
         else:
-            cur.execute('SELECT * FROM users where TASK = ? and EMAIL = ? ', (se,emailg))
+            cur.execute('SELECT * FROM users where TASK = ? and EMAIL = ? ', (se,emailg,))
+        r1 = cur.fetchall()
+        cur.execute('SELECT pid,name FROM accounts where EMAIL = ?', (emailg,))
         row = cur.fetchall()
+        print (r1,row)
         conn.close()
-        return render_template('dashboard.html', data=row)
+        result = []
+        name = emailg + '.jpg'
+        path = 'static/'
+        for root, dirs, files in os.walk(path):
+            if name in files:
+                result.append(os.path.join(root, name))
+        if len(result) == 0:
+            return render_template('mytasks.html', data=row, data1=r1, iimg='user.png')
+        else:
+            return render_template('mytasks.html', data=row, data1=r1, iimg=name)
 
 
 if __name__ == "__main__":
@@ -187,6 +371,7 @@ if __name__ == "__main__":
         date = time.strptime(now, "%Y-%m-%d")
         # print(date)
         if(newdate1 < date):
+            print (x[3],now)
             cur.execute(
                 'UPDATE users SET STATUS = "TO DO" where EMAIL = ?', (x[1],))
             conn.commit()
@@ -199,7 +384,6 @@ if __name__ == "__main__":
             cur.execute(
                 'UPDATE users SET STATUS="DONE" where EMAIL = ?', (x[1],))
             conn.commit()
-            # print(x[3], x[4] ,now)
     conn.close()
     app.debug = True
     app.run()
