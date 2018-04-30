@@ -166,15 +166,9 @@
       <pre>
        {% for x in data %}
        <h1><i><b>NAME:-</b></i>   {{x[1]}}<br>
-         <b><i>USERNAME (EMAIL) :-</b></i>   {{x[2]}}</h1></pre>
-         <tr>
-          <td>{{x[0][2]}}</td>
-          <td>{{x[0][3]}}</td>
-          <td>{{x[0][4]}}</td>
-          <td>{{x[0][5]}}</td>
-        </tr>
+         <b><i>USERNAME (EMAIL) :-</b></i>   {{x[2]}} </h1> </pre>
+      <h1><i><b>No of tasks completed :-</b></i>  {{x[5]}}</h1>
         {% endfor %}
-      </table>
       <br><br>
       <form method="POST" action="/logout">
        <center></center><button type="submit">log out</button></center>

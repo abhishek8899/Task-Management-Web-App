@@ -204,8 +204,9 @@ def send():
             l = bcrypt.gensalt()
             hashpass = bcrypt.hashpw(hashpassa.encode('utf-8'), l)
             print(hashpass, nnn)
+            comp = 1
             cur.execute(
-                "INSERT INTO accounts (NAME,EMAIL,PASSWARD,SALT) VALUES (?,?,?,?);", (nnnn, nnn, hashpass, l))
+                "INSERT INTO accounts (NAME,EMAIL,PASSWARD,SALT,COMPLETED) VALUES (?,?,?,?,?);", (nnnn, nnn, hashpass, l,comp))
             conn.commit()
             cur.execute('SELECT * FROM accounts')
             rows = cur.fetchall()
@@ -341,6 +342,32 @@ def search():
         else:
             cur.execute('SELECT * FROM users where TASK = ? and EMAIL = ? ', (se,emailg,))
         r1 = cur.fetchall()
+        cur.execute('SELECT pid,name FROM accounts where EMAIL = ?', (emailg,))
+        row = cur.fetchall()
+        print (r1,row)
+        conn.close()
+        result = []
+        name = emailg + '.jpg'
+        path = 'static/'
+        for root, dirs, files in os.walk(path):
+            if name in files:
+                result.append(os.path.join(root, name))
+        if len(result) == 0:
+            return render_template('mytasks.html', data=row, data1=r1, iimg='user.png')
+        else:
+            return render_template('mytasks.html', data=row, data1=r1, iimg=name)
+
+
+@app.route('/delete', methods=['POST', 'GET'])
+def delete():
+    if request.method == 'POST':
+        conn = sqlite3.connect('db/test.db')
+        cur = conn.cursor()
+        se = request.form['deleting']
+        cur.execute('DELETE FROM users where TASK = ? and EMAIL = ?', (se,emailg,))
+        cur.execute('SELECT * FROM users where EMAIL = ? ', (emailg,))
+        r1 = cur.fetchall()
+        cur.execute('UPDATE accounts SET COMPLETED = 1 where EMAIL = ? ',(emailg,))
         cur.execute('SELECT pid,name FROM accounts where EMAIL = ?', (emailg,))
         row = cur.fetchall()
         print (r1,row)
